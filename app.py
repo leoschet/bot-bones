@@ -11,11 +11,11 @@ from flask import Flask, request
 # python -m flask run
 app = Flask(__name__)
 
-information_message = "Hello, this is a messenger bot application!"
+INFORMATION_MESSAGE = "Hello, this is a messenger bot application!"
 
 @app.route('/')
 def app_greetings():
-    return information_message
+    return INFORMATION_MESSAGE
 
 @app.route('/webhook', methods=['GET'])
 def verify():
@@ -26,7 +26,7 @@ def verify():
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
 
-    return information_message, 200
+    return INFORMATION_MESSAGE, 200
 
 
 @app.route('/webhook', methods=['POST'])
@@ -90,8 +90,8 @@ def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
         if type(msg) is dict:
             msg = json.dumps(msg)
         else:
-            msg = unicode(msg).format(*args, **kwargs)
-        print u"{}: {}".format(datetime.now(), msg)
+            msg = str(msg).format(*args, **kwargs)
+        print(u"{}: {}".format(datetime.now(), msg))
     except UnicodeEncodeError:
         pass  # squash logging errors in case of non-ascii text
     sys.stdout.flush()
