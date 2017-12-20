@@ -1,3 +1,12 @@
+"""
+Base skeleton for python bots.
+
+To run this application locally:
+$ set FLASK_APP=botbones\app.py
+$ python -m flask run
+
+"""
+
 import os
 import sys
 import json
@@ -6,9 +15,6 @@ from datetime import datetime
 import requests
 from flask import Flask, request
 
-# To run this application locally:
-# set FLASK_APP=botbones\app.py
-# python -m flask run
 app = Flask(__name__)
 
 INFORMATION_MESSAGE = "Hello, this is a messenger bot application!"
@@ -19,8 +25,11 @@ def app_greetings():
 
 @app.route('/webhook', methods=['GET'])
 def verify():
-    # when the endpoint is registered as a webhook, it must echo back
-    # the 'hub.challenge' value it receives in the query arguments
+    """
+    When the endpoint is registered as a webhook, it must echo back
+    the 'hub.challenge' value it receives in the query arguments
+    """
+
     if request.args.get("hub.mode") == "subscribe" and request.args.get("hub.challenge"):
         if not request.args.get("hub.verify_token") == os.environ["VERIFY_TOKEN"]:
             return "Verification token mismatch", 403
@@ -31,8 +40,9 @@ def verify():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-
-    # endpoint for processing incoming messaging events
+    """
+    Endpoint for processing incoming messaging events
+    """
 
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
@@ -62,6 +72,9 @@ def webhook():
     return "ok", 200
 
 def send_message(recipient_id, message_text):
+    """
+    Basic message sender
+    """
 
     log("sending message to {recipient}: {text}".format(recipient=recipient_id, text=message_text))
 
@@ -85,9 +98,13 @@ def send_message(recipient_id, message_text):
         log(r.text)
 
 
-def log(msg, *args, **kwargs):  # simple wrapper for logging to stdout on heroku
+def log(msg, *args, **kwargs):
+    """
+    A simple wrapper for logging to stdout on heroku
+    """
+
     try:
-        if type(msg) is dict:
+        if isinstance(msg, dict):
             msg = json.dumps(msg)
         else:
             msg = str(msg).format(*args, **kwargs)
