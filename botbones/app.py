@@ -11,7 +11,13 @@ from flask import Flask, request
 # python -m flask run
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
+information_message = "Hello, this is a messenger bot application!"
+
+@app.route('/')
+def app_greetings():
+    return information_message
+
+@app.route('/webhook', methods=['GET'])
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
     # the 'hub.challenge' value it receives in the query arguments
@@ -20,10 +26,10 @@ def verify():
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
 
-    return "Hello, this is a messenger bot application!", 200
+    return information_message, 200
 
 
-@app.route('/', methods=['POST'])
+@app.route('/webhook', methods=['POST'])
 def webhook():
 
     # endpoint for processing incoming messaging events
